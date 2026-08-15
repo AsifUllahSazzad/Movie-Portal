@@ -1,4 +1,3 @@
-import React from "react";
 
 const AddMovies = () => {
   const genres = [
@@ -12,7 +11,14 @@ const AddMovies = () => {
     "Animation",
   ];
 
-  
+
+  // release year
+  const date = new Date().getFullYear()
+  const year = Array.from({length: 50}, (_,i) => date - i)
+
+
+
+
 
   return (
     <div className="hero bg-base-200 min-h-screen">
@@ -34,21 +40,26 @@ const AddMovies = () => {
               />
 
               <label className="label">Genre</label>
-              <select defaultValue="Pick a color" className="select">
-                <option value="">Select genre</option>
+              <select className="select">
+                <option className="text-gray-400">Select genre</option>
                 {
                     genres.map((g) => <option key={g} value={g}>{g}</option>)
                 }
               </select>
 
-              <label className="label">Duration</label>
-              <input type="password" className="input" placeholder="Password" />
+              <label className="label">Duration (minutes)</label>
+              <input type="number" className="input" placeholder="e.g. 148" />
 
               <label className="label">Release Year</label>
-              <input type="password" className="input" placeholder="Password" />
+              <select className="select">
+                <option className="text-gray-400">Select year</option>
+                {
+                    year.map((y) => <option key={y}>{y}</option>)
+                }
+              </select>
 
               <label className="label">Rating</label>
-              <input type="password" className="input" placeholder="Password" />
+                
 
               <label className="label">Summary</label>
               <input type="password" className="input" placeholder="Password" />

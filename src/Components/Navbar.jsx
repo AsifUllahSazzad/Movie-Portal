@@ -7,7 +7,7 @@ const Navbar = () => {
   const lists = (
     <>
       <li>
-        <a>Home</a>
+        <NavLink to={'/'}>Home</NavLink>
       </li>
       <li>
         <a>All Movies</a>
