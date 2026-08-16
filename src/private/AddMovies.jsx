@@ -77,8 +77,10 @@ const AddMovies = () => {
               <div className="grid grid-cols-2 gap-y-4 mt-2 gap-x-5">
                 <div className="space-y-1">
                   <label className="label font-bold text-base">Genre</label>
-                  <select className="select">
-                    <option className="text-gray-400">Select genre</option>
+                  <select className="select" defaultValue={"Select genre"}>
+                    <option disabled={true} className="text-gray-400">
+                      Select genre
+                    </option>
                     {genres.map((g) => (
                       <option key={g} value={g}>
                         {g}
@@ -97,31 +99,26 @@ const AddMovies = () => {
                     placeholder="e.g. 148"
                   />
                 </div>
+              </div>
 
-                <div className="space-y-1">
-                  <label className="label font-bold text-base">
-                    Release Year
-                  </label>
-                  <select className="select">
-                    <option className="text-gray-400">Select year</option>
-                    {year.map((y) => (
-                      <option key={y}>{y}</option>
-                    ))}
-                  </select>
-                </div>
+              <div className="space-y-1">
+                <label className="label font-bold text-base">
+                  Release Year
+                </label>
+                <select className="select w-full" defaultValue={"Select year"}>
+                  <option disabled={true} className="text-gray-400">
+                    Select year
+                  </option>
+                  {year.map((y) => (
+                    <option key={y}>{y}</option>
+                  ))}
+                </select>
+              </div>
 
-                <div className="space-y-1">
-                  <label className="label font-bold text-base">Rating</label>
-                   <input
-                    type="number"
-                    className="input"
-                    placeholder="Rating"
-                    value={value ? value : ''}
-                    min={0}
-                    max={5}
-                    step={0.5}
-                    onChange={(e) => setValue(Number(e.target.value))}
-                  />
+              <div className="space-y-1">
+                <label className="label font-bold text-base">Rating</label>
+
+                <div className="flex justify-between select bg-none w-full">
                   <Rating
                     name="hover-feedback"
                     value={value}
@@ -138,9 +135,7 @@ const AddMovies = () => {
                     }
                   />
                   {value !== null && (
-                    <Box sx={{ ml: 2 }}>
-                      {labels[hover !== -1 ? hover : value]}
-                    </Box>
+                    <Box sx={{}}>{labels[hover !== -1 ? hover : value]}</Box>
                   )}
                 </div>
               </div>
@@ -149,7 +144,7 @@ const AddMovies = () => {
                 <label className="label font-bold text-base">Summary</label>
                 <textarea
                   className="textarea w-full"
-                  placeholder="Summary"
+                  placeholder="A short summary of the movie..."
                 ></textarea>
               </div>
 
