@@ -1,5 +1,10 @@
+import { useState } from "react";
+import Rating from "@mui/material/Rating";
+import StarIcon from "@mui/icons-material/Star";
+import Box from "@mui/material/Box";
 
 const AddMovies = () => {
+  // genres
   const genres = [
     "Comedy",
     "Drama",
@@ -11,14 +16,30 @@ const AddMovies = () => {
     "Animation",
   ];
 
+  // rating
+  const labels = {
+    0.5: "Terrible",
+    1: "Bad",
+    1.5: "Poor",
+    2: "Below Average",
+    2.5: "Average",
+    3: "Above Average",
+    3.5: "Good",
+    4: "Very Good",
+    4.5: "Great",
+    5: "Outstanding",
+  };
+
+  const [value, setValue] = useState(0);
+  const [hover, setHover] = useState(-1);
+
+  const getLabelText = (value) => {
+    return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
+  };
 
   // release year
-  const date = new Date().getFullYear()
-  const year = Array.from({length: 50}, (_,i) => date - i)
-
-
-
-
+  const date = new Date().getFullYear();
+  const year = Array.from({ length: 50 }, (_, i) => date - i);
 
   return (
     <div className="hero bg-base-200 min-h-screen">
@@ -26,48 +47,113 @@ const AddMovies = () => {
         <div className="text-center">
           <h1 className="text-5xl font-bold">Add Movie</h1>
         </div>
-        <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+        <div className="card bg-base-100 w-full max-w-lg shrink-0 shadow-2xl">
           <div className="card-body">
             <fieldset className="fieldset">
-              <label className="label">Movie Poster (URL)</label>
-              <input type="url" className="input" placeholder="https://" />
+              <div className="flex flex-col gap-y-4">
+                <div className="space-y-1">
+                  <label className="label font-bold text-base">
+                    Movie Poster (URL)
+                  </label>
+                  <input
+                    type="url"
+                    className="input w-full"
+                    placeholder="https://"
+                  />
+                </div>
 
-              <label className="label">Movie Title</label>
-              <input
-                type="text"
-                className="input"
-                placeholder="e.g. Inception"
-              />
-
-              <label className="label">Genre</label>
-              <select className="select">
-                <option className="text-gray-400">Select genre</option>
-                {
-                    genres.map((g) => <option key={g} value={g}>{g}</option>)
-                }
-              </select>
-
-              <label className="label">Duration (minutes)</label>
-              <input type="number" className="input" placeholder="e.g. 148" />
-
-              <label className="label">Release Year</label>
-              <select className="select">
-                <option className="text-gray-400">Select year</option>
-                {
-                    year.map((y) => <option key={y}>{y}</option>)
-                }
-              </select>
-
-              <label className="label">Rating</label>
-                
-
-              <label className="label">Summary</label>
-              <input type="password" className="input" placeholder="Password" />
-
-              <div>
-                <a className="link link-hover">Forgot password?</a>
+                <div className="space-y-1">
+                  <label className="label font-bold text-base">
+                    Movie Title
+                  </label>
+                  <input
+                    type="text"
+                    className="input w-full"
+                    placeholder="e.g. Inception"
+                  />
+                </div>
               </div>
-              <button className="btn btn-neutral mt-4">Login</button>
+
+              <div className="grid grid-cols-2 gap-y-4 mt-2 gap-x-5">
+                <div className="space-y-1">
+                  <label className="label font-bold text-base">Genre</label>
+                  <select className="select">
+                    <option className="text-gray-400">Select genre</option>
+                    {genres.map((g) => (
+                      <option key={g} value={g}>
+                        {g}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="label font-bold text-base">
+                    Duration (minutes)
+                  </label>
+                  <input
+                    type="number"
+                    className="input"
+                    placeholder="e.g. 148"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="label font-bold text-base">
+                    Release Year
+                  </label>
+                  <select className="select">
+                    <option className="text-gray-400">Select year</option>
+                    {year.map((y) => (
+                      <option key={y}>{y}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="label font-bold text-base">Rating</label>
+                   <input
+                    type="number"
+                    className="input"
+                    placeholder="Rating"
+                    value={value ? value : ''}
+                    min={0}
+                    max={5}
+                    step={0.5}
+                    onChange={(e) => setValue(Number(e.target.value))}
+                  />
+                  <Rating
+                    name="hover-feedback"
+                    value={value}
+                    precision={0.5}
+                    getLabelText={getLabelText}
+                    onChange={(event, newValue) => {
+                      setValue(newValue);
+                    }}
+                    onChangeActive={(event, newHover) => {
+                      setHover(newHover);
+                    }}
+                    emptyIcon={
+                      <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />
+                    }
+                  />
+                  {value !== null && (
+                    <Box sx={{ ml: 2 }}>
+                      {labels[hover !== -1 ? hover : value]}
+                    </Box>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-col mt-2 space-y-1">
+                <label className="label font-bold text-base">Summary</label>
+                <textarea
+                  className="textarea w-full"
+                  placeholder="Summary"
+                ></textarea>
+              </div>
+
+              <button className="btn btn-neutral mt-4">Add</button>
             </fieldset>
           </div>
         </div>

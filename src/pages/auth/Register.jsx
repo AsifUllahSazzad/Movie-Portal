@@ -49,7 +49,7 @@ const Register = () => {
       return;
     }
 
-   await createNewUser(email, password)
+    await createNewUser(email, password)
       .then((result) => {
         updateProfile(auth.currentUser, {
           displayName: name,
@@ -85,77 +85,83 @@ const Register = () => {
 
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <div className="card-body">
-            <form onSubmit={handleForm} className="fieldset">
-              <label className="label">Name</label>
-              <input
-                type="text"
-                className="input border 
-                border-gray-500 rounded-sm"
-                placeholder="Name"
-                name="name"
-                required
-              />
-
-              <label className="label">Email</label>
-              <input
-                type="email"
-                className="input border 
-                border-gray-500 rounded-sm"
-                placeholder="Email"
-                name="email"
-                required
-              />
-              {emailErrorMessage && (
-                <div className="flex items-center justify-center gap-x-1 text-red-400">
-                  <span>
-                    <RiErrorWarningLine />
-                  </span>
-                  <span>{emailErrorMessage}</span>
-                </div>
-              )}
-
-              <label className="label">Photo URL</label>
-              <input
-                type="url"
-                className="input border 
-                border-gray-500 rounded-sm"
-                placeholder="Photo URL"
-                name="photo"
-                required
-              />
-
-              <label className="label">Password</label>
-              <div className="relative">
+            <form onSubmit={handleForm} className="fieldset space-y-2">
+              <div className="space-y-1">
+                <label className="label font-bold text-base">Name</label>
                 <input
-                  type={passwordShow ? "text" : "password"}
+                  type="text"
                   className="input border 
                 border-gray-500 rounded-sm"
-                  placeholder="Password"
-                  name="password"
+                  placeholder="Name"
+                  name="name"
                   required
                 />
-                <button
-                  onClick={() => setPasswordShow(!passwordShow)}
-                  className="absolute right-5 top-1/2 -translate-1/2"
-                >
-                  {passwordShow ? (
-                    <FaEyeSlash className="size-4 cursor-pointer" />
-                  ) : (
-                    <FaEye className="size-4 cursor-pointer" />
-                  )}
-                </button>
+              </div>
+              <div className="space-y-1">
+                <label className="label font-bold text-base">Email</label>
+                <input
+                  type="email"
+                  className="input border 
+                border-gray-500 rounded-sm"
+                  placeholder="Email"
+                  name="email"
+                  required
+                />
+                {emailErrorMessage && (
+                  <div className="mt-1 flex items-center justify-center gap-x-1 text-red-400">
+                    <span>
+                      <RiErrorWarningLine />
+                    </span>
+                    <span>{emailErrorMessage}</span>
+                  </div>
+                )}
               </div>
 
-              {passwordErrorMessage && (
-                <div className="flex items-center justify-center gap-x-1 text-red-400">
-                  <span>
-                    <RiErrorWarningLine />
-                  </span>
-                  <span>{passwordErrorMessage}</span>
-                </div>
-              )}
+              <div className="space-y-1">
+                <label className="label font-bold text-base">Photo URL</label>
+                <input
+                  type="url"
+                  className="input border 
+                border-gray-500 rounded-sm"
+                  placeholder="Photo URL"
+                  name="photo"
+                  required
+                />
+              </div>
 
-              <button className="btn btn-neutral border-1 rounded-2xl">
+              <div className="space-y-1">
+                <label className="label font-bold text-base">Password</label>
+                <div className="relative">
+                  <input
+                    type={passwordShow ? "text" : "password"}
+                    className="input border 
+                border-gray-500 rounded-sm"
+                    placeholder="Password"
+                    name="password"
+                    required
+                  />
+                  <button
+                    onClick={() => setPasswordShow(!passwordShow)}
+                    className="absolute right-5 top-1/2 -translate-1/2"
+                  >
+                    {passwordShow ? (
+                      <FaEyeSlash className="size-4 cursor-pointer" />
+                    ) : (
+                      <FaEye className="size-4 cursor-pointer" />
+                    )}
+                  </button>
+                </div>
+                {passwordErrorMessage && (
+                  <div className="mt-1 flex items-center justify-center gap-x-1 text-red-400">
+                    <span>
+                      <RiErrorWarningLine />
+                    </span>
+                    <span>{passwordErrorMessage}</span>
+                  </div>
+                )}
+              </div>
+
+              <button className="mt-3 btn btn-neutral border-1 rounded-2xl">
                 Register
               </button>
             </form>

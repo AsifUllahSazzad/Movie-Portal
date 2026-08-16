@@ -5,6 +5,7 @@ import { AuthContext } from "../../Provider/AuthProvider";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { fetchSignInMethodsForEmail } from "firebase/auth";
 import auth from "../../firebase/firebase.init";
+import Button from "@mui/material/Button";
 
 const Login = () => {
   const { login, socialLogin } = useContext(AuthContext);
@@ -62,7 +63,7 @@ const Login = () => {
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <div className="card-body">
             <form onSubmit={handleForm} className="fieldset">
-              <label className="label">Email</label>
+              <label className="label font-bold text-base">Email</label>
               <input
                 type="email"
                 className="input border 
@@ -81,7 +82,7 @@ const Login = () => {
                 </div>
               )}
 
-              <label className="label">Password</label>
+              <label className="label font-bold text-base">Password</label>
               <input
                 type="password"
                 className="input border 
