@@ -41,6 +41,33 @@ const AddMovies = () => {
   const date = new Date().getFullYear();
   const year = Array.from({ length: 50 }, (_, i) => date - i);
 
+  //
+
+  const [genre, setGenre] = useState("");
+  const [releaseYear, setReleaseYear] = useState(0);
+  const [rating, setRating] = useState(null);
+
+  const handleAddMovie = (event) => {
+    event.preventDefault();
+
+    const form = event.target;
+
+    const poster = form.posterUrl.value;
+    const title = form.movieTitle.value;
+    const duration = form.duration.value;
+    const summary = form.summary.value;
+
+    // console.log(poster, title, genre, duration, releaseYear, rating, summary);
+
+
+    // poster url validation check
+    // input type check
+    console.log("hi")
+    if(!poster || typeof(poster) !== 'string'){
+        return {valid: false, error: "Movie Poster link is required."}
+    }
+  };
+
   return (
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col">
@@ -49,7 +76,7 @@ const AddMovies = () => {
         </div>
         <div className="card bg-base-100 w-full max-w-lg shrink-0 shadow-2xl">
           <div className="card-body">
-            <fieldset className="fieldset">
+            <form onSubmit={handleAddMovie} className="fieldset">
               <div className="flex flex-col gap-y-4">
                 <div className="space-y-1">
                   <label className="label font-bold text-base">
@@ -59,6 +86,7 @@ const AddMovies = () => {
                     type="url"
                     className="input w-full"
                     placeholder="https://"
+                    name="posterUrl"
                   />
                 </div>
 
@@ -70,6 +98,7 @@ const AddMovies = () => {
                     type="text"
                     className="input w-full"
                     placeholder="e.g. Inception"
+                    name="movieTitle"
                   />
                 </div>
               </div>
@@ -77,7 +106,11 @@ const AddMovies = () => {
               <div className="grid grid-cols-2 gap-y-4 mt-2 gap-x-5">
                 <div className="space-y-1">
                   <label className="label font-bold text-base">Genre</label>
-                  <select className="select" defaultValue={"Select genre"}>
+                  <select
+                    onChange={(e) => setGenre(e.target.value)}
+                    className="select"
+                    defaultValue={"Select genre"}
+                  >
                     <option disabled={true} className="text-gray-400">
                       Select genre
                     </option>
@@ -97,15 +130,20 @@ const AddMovies = () => {
                     type="number"
                     className="input"
                     placeholder="e.g. 148"
+                    name="duration"
                   />
                 </div>
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1 mt-2">
                 <label className="label font-bold text-base">
                   Release Year
                 </label>
-                <select className="select w-full" defaultValue={"Select year"}>
+                <select
+                  onChange={(e) => setReleaseYear(e.target.value)}
+                  className="select w-full"
+                  defaultValue={"Select year"}
+                >
                   <option disabled={true} className="text-gray-400">
                     Select year
                   </option>
@@ -115,7 +153,7 @@ const AddMovies = () => {
                 </select>
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1 mt-2">
                 <label className="label font-bold text-base">Rating</label>
 
                 <div className="flex justify-between select bg-none w-full">
@@ -126,6 +164,7 @@ const AddMovies = () => {
                     getLabelText={getLabelText}
                     onChange={(event, newValue) => {
                       setValue(newValue);
+                      setRating(newValue);
                     }}
                     onChangeActive={(event, newHover) => {
                       setHover(newHover);
@@ -143,13 +182,14 @@ const AddMovies = () => {
               <div className="flex flex-col mt-2 space-y-1">
                 <label className="label font-bold text-base">Summary</label>
                 <textarea
+                  name="summary"
                   className="textarea w-full"
                   placeholder="A short summary of the movie..."
                 ></textarea>
               </div>
 
-              <button className="btn btn-neutral mt-4">Add</button>
-            </fieldset>
+              <button className="btn btn-neutral mt-4">Add Movie</button>
+            </form>
           </div>
         </div>
       </div>
