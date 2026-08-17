@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Rating from "@mui/material/Rating";
 import StarIcon from "@mui/icons-material/Star";
 import Box from "@mui/material/Box";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { duration } from "@mui/material/styles";
+import { AuthContext } from "../Provider/AuthProvider";
 
 const AddMovies = () => {
+  const { currentUser } = useContext(AuthContext);
+
+  console.log(currentUser.email)
+
   // genres
   const genres = [
     "Comedy",
@@ -189,8 +194,6 @@ const AddMovies = () => {
     const duration = form.duration.value;
     const summary = form.summary.value;
 
-    // console.log(poster, title, genre, duration, releaseYear, rating, summary);
-
     // poster validation check
     const posterValidation = handlePosterValidation(poster);
     if (!posterValidation.valid) {
@@ -241,6 +244,32 @@ const AddMovies = () => {
       setSummaryError(summaryValidation.error);
       return;
     }
+
+    console.log(poster, title, genre, duration, releaseYear, rating, summary, currentUser.email);
+
+    const newMovieAdd = {
+      'Movie Poster': poster,
+      'Movie Title' : title,
+      'Genre' : genre,
+      'Duration' : duration,
+      'Release Year': releaseYear,
+      'Rating' : rating,
+      'Summary' : summary,
+      'Email' : currentUser.email
+    }
+
+    // send data to backend
+    fetch("http://localhost:3000/movies", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(newMovieAdd)
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result)
+      });
   };
 
   return (
