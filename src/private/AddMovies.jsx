@@ -51,7 +51,7 @@ const AddMovies = () => {
   // poster url validation check
   const [posterError, setPosterError] = useState("");
   const handlePosterValidation = (poster) => {
-    // input type check
+    // input exists and type check
     if (!poster || typeof poster !== "string") {
       return { valid: false, error: "Movie Poster link is required." };
     }
@@ -85,6 +85,40 @@ const AddMovies = () => {
     return { valid: true, error: "" };
   };
 
+  // Movie title validation
+  const [titleError, setTitleError] = useState("");
+  const handleTitleValidation = (title) => {
+    // input exists check
+    if (!title || typeof title !== "string") {
+      return {
+        valid: false,
+        error: "Movie Title is required.",
+      };
+    }
+
+    // start and ending space remove
+    const trimmed = title.trim();
+
+    // after check tilte exists
+    if (trimmed.length === 0) {
+      return {
+        valid: false,
+        error: "Movie Title is required.",
+      };
+    }
+
+    // check atleast 2 character
+    if (trimmed.length < 2) {
+      return {
+        valid: false,
+        error: "Movie Title must be at least 2 characters.",
+      };
+    }
+
+    setTitleError("");
+    return { valid: true, error: "" };
+  };
+
   const handleAddMovie = (event) => {
     event.preventDefault();
 
@@ -97,13 +131,19 @@ const AddMovies = () => {
 
     // console.log(poster, title, genre, duration, releaseYear, rating, summary);
 
+    // poster validation check
     const posterValidation = handlePosterValidation(poster);
-
     if (!posterValidation.valid) {
       setPosterError(posterValidation.error);
       return;
     }
 
+    // title validation check
+    const titleValidation = handleTitleValidation(title);
+    if (!titleValidation.valid) {
+      setTitleError(titleValidation.error);
+      return;
+    }
   };
 
   return (
@@ -147,6 +187,14 @@ const AddMovies = () => {
                     placeholder="e.g. Inception"
                     name="movieTitle"
                   />
+                  {titleError && (
+                    <div className="flex items-center justify-center gap-x-1 text-red-400">
+                      <span>
+                        <RiErrorWarningLine />
+                      </span>
+                      <span>{titleError}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
