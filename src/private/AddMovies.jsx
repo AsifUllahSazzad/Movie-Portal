@@ -2,6 +2,7 @@ import { useState } from "react";
 import Rating from "@mui/material/Rating";
 import StarIcon from "@mui/icons-material/Star";
 import Box from "@mui/material/Box";
+import { RiErrorWarningLine } from "react-icons/ri";
 
 const AddMovies = () => {
   // genres
@@ -47,6 +48,43 @@ const AddMovies = () => {
   const [releaseYear, setReleaseYear] = useState(0);
   const [rating, setRating] = useState(null);
 
+  // poster url validation check
+  const [posterError, setPosterError] = useState("");
+  const handlePosterValidation = (poster) => {
+    // input type check
+    if (!poster || typeof poster !== "string") {
+      return { valid: false, error: "Movie Poster link is required." };
+    }
+
+    // start and ending space remove
+    const trimmed = poster.trim();
+
+    // check space
+    const hasSpace = /\s/.test(trimmed);
+
+    if (hasSpace) {
+      return { valid: false, error: "Link cannot contain space." };
+    }
+
+    // check url is right or not
+    let url;
+    try {
+      url = new URL(trimmed);
+    } catch {
+      return { valid: false, error: "Please provide a valid link." };
+    }
+
+    // check https:// or http://
+    if (!["https:", "http:"].includes(url.protocol)) {
+      return {
+        valid: false,
+        error: "Link must start with http:// or https://",
+      };
+    }
+    setPosterError("");
+    return { valid: true, error: "" };
+  };
+
   const handleAddMovie = (event) => {
     event.preventDefault();
 
@@ -59,13 +97,13 @@ const AddMovies = () => {
 
     // console.log(poster, title, genre, duration, releaseYear, rating, summary);
 
+    const posterValidation = handlePosterValidation(poster);
 
-    // poster url validation check
-    // input type check
-    console.log("hi")
-    if(!poster || typeof(poster) !== 'string'){
-        return {valid: false, error: "Movie Poster link is required."}
+    if (!posterValidation.valid) {
+      setPosterError(posterValidation.error);
+      return;
     }
+
   };
 
   return (
@@ -88,6 +126,15 @@ const AddMovies = () => {
                     placeholder="https://"
                     name="posterUrl"
                   />
+
+                  {posterError && (
+                    <div className="flex items-center justify-center gap-x-1 text-red-400">
+                      <span>
+                        <RiErrorWarningLine />
+                      </span>
+                      <span>{posterError}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-1">
