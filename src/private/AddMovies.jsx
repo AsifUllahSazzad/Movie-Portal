@@ -3,6 +3,7 @@ import Rating from "@mui/material/Rating";
 import StarIcon from "@mui/icons-material/Star";
 import Box from "@mui/material/Box";
 import { RiErrorWarningLine } from "react-icons/ri";
+import { duration } from "@mui/material/styles";
 
 const AddMovies = () => {
   // genres
@@ -119,6 +120,32 @@ const AddMovies = () => {
     return { valid: true, error: "" };
   };
 
+  // duration validation check
+  const [durationError, setDurationError] = useState("");
+  const handleDurationValidation = (duration) => {
+    // check the input isn't empty
+    if (!duration) {
+      return {
+        valid: false,
+        error: "Duration is required.",
+      };
+    }
+
+    // convert number
+    const numDuration = Number(duration);
+    if (numDuration <= 60) {
+      return {
+        valid: false,
+        error: "Duration must be greater than 60 minutes.",
+      };
+    }
+
+    setDurationError("");
+    return { valid: true, error: "" };
+  };
+
+  const [genreError, setGenreError] = useState("");
+
   const handleAddMovie = (event) => {
     event.preventDefault();
 
@@ -144,6 +171,26 @@ const AddMovies = () => {
       setTitleError(titleValidation.error);
       return;
     }
+
+    // genre validation check
+    setGenreError("");
+    if (!genre || typeof genre !== "string") {
+      setGenreError("Please select a genre.");
+      return;
+    }
+
+    // duration validation check
+    const durationValidation = handleDurationValidation(duration);
+
+    if (!durationValidation.valid) {
+      setDurationError(durationValidation.error);
+      return;
+    }
+
+    // year validation check
+    console.log()
+
+    // console.log('190-> Valid Year')
   };
 
   return (
@@ -202,8 +249,9 @@ const AddMovies = () => {
                 <div className="space-y-1">
                   <label className="label font-bold text-base">Genre</label>
                   <select
+                    required
                     onChange={(e) => setGenre(e.target.value)}
-                    className="select"
+                    className={`select ${genreError ? "border-red-300" : ""}`}
                     defaultValue={"Select genre"}
                   >
                     <option disabled={true} className="text-gray-400">
@@ -215,6 +263,15 @@ const AddMovies = () => {
                       </option>
                     ))}
                   </select>
+
+                  {genreError && (
+                    <div className="flex items-center justify-center gap-x-1 text-red-400">
+                      <span>
+                        <RiErrorWarningLine />
+                      </span>
+                      <span>{genreError}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-1">
@@ -227,6 +284,15 @@ const AddMovies = () => {
                     placeholder="e.g. 148"
                     name="duration"
                   />
+
+                  {durationError && (
+                    <div className="flex items-center justify-center gap-x-1 text-red-400">
+                      <span>
+                        <RiErrorWarningLine />
+                      </span>
+                      <span>{durationError}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
