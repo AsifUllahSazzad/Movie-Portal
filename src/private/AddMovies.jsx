@@ -144,7 +144,37 @@ const AddMovies = () => {
     return { valid: true, error: "" };
   };
 
+  const handleSummaryValidation = (summary) => {
+    //check the input isn't empty and type
+    if (!summary || typeof summary !== "string") {
+      return {
+        valid: false,
+        error: "Summary is required.",
+      };
+    }
+
+    // trim whitespace
+    const trimmedSummary = summary.trim();
+
+    // after trim check summary isn't empty
+    if (!trimmedSummary.length === 0) {
+      return { valid: false, error: "Summary is required." };
+    }
+
+    // at least 10 character
+    if (trimmedSummary.length < 10) {
+      return { valid: false, error: "Summary must be at least 10 characters." };
+    }
+
+    setSummaryError("");
+
+    return { valid: true, error: "" };
+  };
+
   const [genreError, setGenreError] = useState("");
+  const [releaseYearError, setReleaseYearError] = useState("");
+  const [ratingError, setRatingError] = useState("");
+  const [summaryError, setSummaryError] = useState("");
 
   const handleAddMovie = (event) => {
     event.preventDefault();
@@ -188,9 +218,26 @@ const AddMovies = () => {
     }
 
     // year validation check
-    console.log()
+    setReleaseYearError("");
+    if (!releaseYear) {
+      setReleaseYearError("Release Year is required.");
+      return;
+    }
 
-    // console.log('190-> Valid Year')
+    // rating validation check
+    setRatingError("");
+    if (!rating) {
+      setRatingError("Please select a rating.");
+      return;
+    }
+
+    // summary validation check
+    const summaryValidation = handleSummaryValidation(summary);
+
+    if (!summaryValidation.valid) {
+      setSummaryError(summaryValidation.error);
+      return;
+    }
   };
 
   return (
@@ -312,6 +359,15 @@ const AddMovies = () => {
                     <option key={y}>{y}</option>
                   ))}
                 </select>
+
+                {releaseYearError && (
+                  <div className="flex items-center justify-center gap-x-1 text-red-400">
+                    <span>
+                      <RiErrorWarningLine />
+                    </span>
+                    <span>{releaseYearError}</span>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-1 mt-2">
@@ -338,6 +394,15 @@ const AddMovies = () => {
                     <Box sx={{}}>{labels[hover !== -1 ? hover : value]}</Box>
                   )}
                 </div>
+
+                {ratingError && (
+                  <div className="flex items-center justify-center gap-x-1 text-red-400">
+                    <span>
+                      <RiErrorWarningLine />
+                    </span>
+                    <span>{ratingError}</span>
+                  </div>
+                )}
               </div>
 
               <div className="flex flex-col mt-2 space-y-1">
@@ -347,6 +412,15 @@ const AddMovies = () => {
                   className="textarea w-full"
                   placeholder="A short summary of the movie..."
                 ></textarea>
+
+                {summaryError && (
+                  <div className="flex items-center justify-center gap-x-1 text-red-400">
+                    <span>
+                      <RiErrorWarningLine />
+                    </span>
+                    <span>{summaryError}</span>
+                  </div>
+                )}
               </div>
 
               <button className="btn btn-neutral mt-4">Add Movie</button>
