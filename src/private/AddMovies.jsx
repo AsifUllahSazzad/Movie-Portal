@@ -176,9 +176,12 @@ const AddMovies = () => {
   const [ratingError, setRatingError] = useState("");
   const [summaryError, setSummaryError] = useState("");
 
+  const [btnDisabled, setBtnDisabled] = useState(false);
+
   const handleAddMovie = (event) => {
     event.preventDefault();
 
+    // user input
     const form = event.target;
 
     const poster = form.posterUrl.value;
