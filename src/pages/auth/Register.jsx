@@ -52,10 +52,10 @@ const Register = () => {
   };
 
   // photo url validation
-  const handlePhotoValidation = (photo) => {
+  const handlePhotoValidation = async (photo) => {
     // input exists and type check
     if (!photo || typeof photo !== "string") {
-      return { valid: false, error: "Movie Poster link is required." };
+      return { valid: false, error: "User profile link is required." };
     }
 
     // start and ending space remove
@@ -96,8 +96,28 @@ const Register = () => {
     }
 
     // 2nd actually try loading the image
-    
-
+    return new Promise((resolve) => {
+      const img = new Image();
+      // after 8 second later error show
+      const timeOut = setTimeout(() => {
+        img.src = "";
+        resolve({ valid: false, error: "Image took too long to load." });
+      }, 8000);
+      // image find success
+      img.onload = () => {
+        clearTimeout(timeOut);
+        resolve({ valid: true, error: "" });
+      };
+      // firstly find find error without 8 second time need
+      img.onerror = () => {
+        clearTimeout(timeOut);
+        resolve({
+          valid: false,
+          error: "Link doesn't point to a loadable image.",
+        });
+      };
+      img.src = trimmed;
+    });
     return { valid: true, error: "" };
   };
 
@@ -126,16 +146,15 @@ const Register = () => {
     }
 
     // email validation
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    // if (!emailRegex.test(email)) {
-    //   setEmailErrorMessage("Please enter a valid email address.");
-    //   return;
-    // }
-    console.log("127-> comment");
+    if (!emailRegex.test(email)) {
+      setEmailErrorMessage("Please enter a valid email address.");
+      return;
+    }
 
     // photo validation
-    const photoValidation = handlePhotoValidation(photo);
+    const photoValidation = await handlePhotoValidation(photo);
     if (!photoValidation.valid) {
       setPhotoErrorMessage(photoValidation.error);
       return;
@@ -185,7 +204,6 @@ const Register = () => {
         }
       });
   };
-
   // Register button disable when any input state empty
   const [disabledBtn, setDisabledBtn] = useState(true);
 
