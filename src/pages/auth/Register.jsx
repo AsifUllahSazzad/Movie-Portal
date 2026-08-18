@@ -9,14 +9,82 @@ import { RiErrorWarningLine } from "react-icons/ri";
 const Register = () => {
   const { createNewUser } = useContext(AuthContext);
 
-  // Error Message
+  // Error Message state
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+  const [nameErrorMessage, setNameErrorMessage] = useState("");
+  const [photoErrorMessage, setPhotoErrorMessage] = useState("");
 
   // Password Show
   const [passwordShow, setPasswordShow] = useState(false);
 
   const navigate = useNavigate();
+
+  // name validation
+  const handleNameValidation = (name) => {
+    const nameRegex = /^[A-Za-z ]+$/;
+
+    if (!name.trim()) {
+      return {
+        valid: false,
+        error: "Name is required.",
+      };
+    }
+
+    if (!nameRegex.test(name.trim())) {
+      return {
+        valid: false,
+        error: "Name can only contain letters and spaces.",
+      };
+    }
+
+    if (name.trim().length < 2) {
+      return {
+        valid: false,
+        error: "Name must be at least 2 characters.",
+      };
+    }
+
+    return {
+      valid: true,
+      error: "",
+    };
+  };
+
+  // photo url validation
+  const handlePhotoValidation = (photo) => {
+    // input exists and type check
+    if (!photo || typeof photo !== "string") {
+      return { valid: false, error: "Movie Poster link is required." };
+    }
+
+    // start and ending space remove
+    const trimmed = photo.trim();
+
+    // check space
+    const hasSpace = /\s/.test(trimmed);
+
+    if (hasSpace) {
+      return { valid: false, error: "Link cannot contain space." };
+    }
+
+    // check url is right or not
+    let url;
+    try {
+      url = new URL(trimmed);
+    } catch {
+      return { valid: false, error: "Please provide a valid link." };
+    }
+
+    // check https:// or http://
+    if (!["https:", "http:"].includes(url.protocol)) {
+      return {
+        valid: false,
+        error: "Link must start with http:// or https://",
+      };
+    }
+    return { valid: true, error: "" };
+  };
 
   const handleForm = async (event) => {
     event.preventDefault();
@@ -32,6 +100,30 @@ const Register = () => {
     // reset previous error message
     setEmailErrorMessage("");
     setPasswordErrorMessage("");
+    setNameErrorMessage("");
+    setPhotoErrorMessage("");
+
+    // name validation
+    const nameValidation = handleNameValidation(name);
+    if (!nameValidation.valid) {
+      setNameErrorMessage(nameValidation.error);
+      return;
+    }
+
+    // email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      setEmailErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
+    // photo validation
+    const photoValidation = handlePhotoValidation(photo);
+    if (!photoValidation.valid) {
+      setPhotoErrorMessage(photoValidation.error);
+      return;
+    }
 
     // password validation
     const hasUpperCase = /[A-Z]/.test(password);
@@ -78,20 +170,23 @@ const Register = () => {
       });
   };
 
-    // Login button disable when any input state empty
-    const [disabledBtn, setDisabledBtn] = useState(true);
-  
-    // when every input not empty then Login button enable
-    const handleChange = (e) => {
-      const form = e.currentTarget;
-  
-      const email = form.email.value.trim();
-      const password = form.password.value;
-  
-      const allFilled = email !== "" && password !== "";
-  
-      setDisabledBtn(!allFilled);
-    };
+  // Register button disable when any input state empty
+  const [disabledBtn, setDisabledBtn] = useState(true);
+
+  // when every input not empty then Register button enable
+  const handleChange = (e) => {
+    const form = e.currentTarget;
+
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const photoUrl = form.photo.value.trim();
+    const password = form.password.value;
+
+    const allFilled =
+      email !== "" && password !== "" && photoUrl !== "" && name !== "";
+
+    setDisabledBtn(!allFilled);
+  };
 
   return (
     <div className="hero bg-base-200 min-h-screen">
@@ -100,7 +195,11 @@ const Register = () => {
 
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <div className="card-body">
-            <form onSubmit={handleForm} className="fieldset space-y-2">
+            <form
+              onChange={handleChange}
+              onSubmit={handleForm}
+              className="fieldset space-y-2"
+            >
               <div className="space-y-1">
                 <label className="label font-bold text-base">Name</label>
                 <input
@@ -109,8 +208,15 @@ const Register = () => {
                 border-gray-500 rounded-sm"
                   placeholder="Name"
                   name="name"
-      
                 />
+                {nameErrorMessage && (
+                  <div className="mt-1 flex items-center justify-center gap-x-1 text-red-400">
+                    <span>
+                      <RiErrorWarningLine />
+                    </span>
+                    <span>{nameErrorMessage}</span>
+                  </div>
+                )}
               </div>
               <div className="space-y-1">
                 <label className="label font-bold text-base">Email</label>
@@ -120,7 +226,6 @@ const Register = () => {
                 border-gray-500 rounded-sm"
                   placeholder="Email"
                   name="email"
-    
                 />
                 {emailErrorMessage && (
                   <div className="mt-1 flex items-center justify-center gap-x-1 text-red-400">
@@ -138,10 +243,17 @@ const Register = () => {
                   type="url"
                   className="input border 
                 border-gray-500 rounded-sm"
-                  placeholder="Photo URL"
+                  placeholder="https://"
                   name="photo"
-       
                 />
+                {photoErrorMessage && (
+                  <div className="mt-1 flex items-center justify-center gap-x-1 text-red-400">
+                    <span>
+                      <RiErrorWarningLine />
+                    </span>
+                    <span>{photoErrorMessage}</span>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-1">
@@ -153,7 +265,6 @@ const Register = () => {
                 border-gray-500 rounded-sm"
                     placeholder="Password"
                     name="password"
-
                   />
                   <button
                     onClick={() => setPasswordShow(!passwordShow)}
@@ -176,7 +287,10 @@ const Register = () => {
                 )}
               </div>
 
-              <button className="mt-3 btn btn-neutral border-1 rounded-2xl">
+              <button
+                disabled={disabledBtn}
+                className="mt-3 btn btn-neutral border-1 rounded-2xl"
+              >
                 Register
               </button>
             </form>

@@ -31,7 +31,7 @@ const Login = () => {
     setPasswordErrorMsg("");
 
     // empty input check
-    if (!email) {
+    if (!email || !email.trim()) {
       setEmailErrorMsg("Email is required.");
       return;
     }
@@ -68,21 +68,6 @@ const Login = () => {
       });
   };
 
-  // Login button disable when any input state empty
-  const [disabledBtn, setDisabledBtn] = useState(true);
-
-  // when every input not empty then Login button enable
-  const handleChange = (e) => {
-    const form = e.currentTarget;
-
-    const email = form.email.value.trim();
-    const password = form.password.value;
-
-    const allFilled = email !== "" && password !== "";
-
-    setDisabledBtn(!allFilled);
-  };
-
   return (
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col w-2/1">
@@ -90,11 +75,7 @@ const Login = () => {
 
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <div className="card-body">
-            <form
-              onChange={handleChange}
-              onSubmit={handleForm}
-              className="fieldset"
-            >
+            <form onSubmit={handleForm} className="fieldset">
               <label className="label font-bold text-base">Email</label>
               <input
                 type="email"
