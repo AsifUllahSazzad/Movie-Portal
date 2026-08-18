@@ -50,10 +50,12 @@ const AddMovies = () => {
   const date = new Date().getFullYear();
   const year = Array.from({ length: 50 }, (_, i) => date - i);
 
-  //user input collection
+  // user input collection
   const [genre, setGenre] = useState("");
   const [releaseYear, setReleaseYear] = useState(0);
   const [rating, setRating] = useState(null);
+
+
 
   // Error Collection State
   const [posterError, setPosterError] = useState("");
@@ -169,7 +171,7 @@ const AddMovies = () => {
     const trimmedSummary = summary.trim();
 
     // after trim check summary isn't empty
-    if (!trimmedSummary.length === 0) {
+    if (trimmedSummary.length === 0) {
       return { valid: false, error: "Summary is required." };
     }
 
@@ -183,7 +185,7 @@ const AddMovies = () => {
     return { valid: true, error: "" };
   };
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleAddMovie = async (event) => {
     event.preventDefault();
@@ -287,7 +289,7 @@ const AddMovies = () => {
 
         // form reset
         form.reset();
-        navigate('/allMovies')
+        navigate("/allMovies");
       } else {
         toast.error("Something went wrong. Please try again.", {
           position: "top-center",
@@ -325,7 +327,10 @@ const AddMovies = () => {
         </div>
         <div className="card bg-base-100 w-full max-w-lg shrink-0 shadow-2xl">
           <div className="card-body">
-            <form onSubmit={handleAddMovie} className="fieldset">
+            <form
+              onSubmit={handleAddMovie}
+              className="fieldset"
+            >
               <div className="flex flex-col gap-y-4">
                 <div className="space-y-1">
                   <label className="label font-bold text-base">
@@ -373,7 +378,6 @@ const AddMovies = () => {
                 <div className="space-y-1">
                   <label className="label font-bold text-base">Genre</label>
                   <select
-                    required
                     onChange={(e) => setGenre(e.target.value)}
                     className={`select ${genreError ? "border-red-300" : ""}`}
                     defaultValue={"Select genre"}
@@ -452,7 +456,7 @@ const AddMovies = () => {
 
                 <div className="flex justify-between select bg-none w-full">
                   <Rating
-                    name="hover-feedback"
+                    name="rating"
                     value={value}
                     precision={0.5}
                     getLabelText={getLabelText}
@@ -500,7 +504,9 @@ const AddMovies = () => {
                 )}
               </div>
 
-              <button className="btn btn-neutral mt-4">Add Movie</button>
+              <button className="btn btn-neutral mt-4">
+                Add Movie
+              </button>
             </form>
           </div>
         </div>

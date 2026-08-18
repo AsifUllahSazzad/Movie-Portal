@@ -8,7 +8,7 @@ const AllMovies = () => {
 //   console.log(loaderData);
 
   return (
-    <div className="grid grid-cols-3 gap-10">
+    <div className="grid grid-cols-4 gap-10">
       {loaderData.map((movie) => (
         <AllMovie key={movie._id} movie={movie}></AllMovie>
       ))}

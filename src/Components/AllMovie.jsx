@@ -1,5 +1,5 @@
 import React from "react";
-import './AllMovie.css'
+import "./AllMovie.css";
 
 const AllMovie = ({ movie }) => {
   const {
@@ -17,18 +17,20 @@ const AllMovie = ({ movie }) => {
   console.log(Duration);
 
   return (
-    <div className="card bg-base-100 w-96 shadow-sm">
+    <div className="card bg-base-100 w-96 shadow-2xl">
       <figure
-      className="movie-poster-fade"
-      style={{ backgroundImage: `url(${moviePoster})` }}>
+        className="movie-poster-fade"
+        style={{ backgroundImage: `url(${moviePoster})` }}
+      >
         <img src={moviePoster} alt="Shoes" />
       </figure>
       <div className="card-body">
-        <h2 className="card-title">Card Title</h2>
-        <p>
-          A card component has a figure, a body part, and inside body there are
-          title and actions parts
+        <h2 className="card-title text-3xl font-normal">{movieTitle}</h2>
+       <div>
+         <p>
+          {/* {Summary} */}
         </p>
+       </div>
         <div className="card-actions justify-end">
           <button className="btn btn-primary">Buy Now</button>
         </div>
