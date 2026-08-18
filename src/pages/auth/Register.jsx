@@ -83,6 +83,21 @@ const Register = () => {
         error: "Link must start with http:// or https://",
       };
     }
+
+    // image direct link validation check
+    // 1st image extension check (no network call)
+    const IMAGE_EXTENSIONS = /\.(jpe?g|png|gif|webp|avif|bmp|svg)(\?.*)?$/i;
+
+    if (!IMAGE_EXTENSIONS.test(url.pathname + url.search)) {
+      return {
+        valid: false,
+        error: "Link doesn't look like a direct image file (.jpg, .png, etc).",
+      };
+    }
+
+    // 2nd actually try loading the image
+    
+
     return { valid: true, error: "" };
   };
 
@@ -111,12 +126,13 @@ const Register = () => {
     }
 
     // email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(email)) {
-      setEmailErrorMessage("Please enter a valid email address.");
-      return;
-    }
+    // if (!emailRegex.test(email)) {
+    //   setEmailErrorMessage("Please enter a valid email address.");
+    //   return;
+    // }
+    console.log("127-> comment");
 
     // photo validation
     const photoValidation = handlePhotoValidation(photo);
