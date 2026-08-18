@@ -78,6 +78,21 @@ const Register = () => {
       });
   };
 
+    // Login button disable when any input state empty
+    const [disabledBtn, setDisabledBtn] = useState(true);
+  
+    // when every input not empty then Login button enable
+    const handleChange = (e) => {
+      const form = e.currentTarget;
+  
+      const email = form.email.value.trim();
+      const password = form.password.value;
+  
+      const allFilled = email !== "" && password !== "";
+  
+      setDisabledBtn(!allFilled);
+    };
+
   return (
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col">
@@ -94,7 +109,7 @@ const Register = () => {
                 border-gray-500 rounded-sm"
                   placeholder="Name"
                   name="name"
-                  required
+      
                 />
               </div>
               <div className="space-y-1">
@@ -105,7 +120,7 @@ const Register = () => {
                 border-gray-500 rounded-sm"
                   placeholder="Email"
                   name="email"
-                  required
+    
                 />
                 {emailErrorMessage && (
                   <div className="mt-1 flex items-center justify-center gap-x-1 text-red-400">
@@ -125,7 +140,7 @@ const Register = () => {
                 border-gray-500 rounded-sm"
                   placeholder="Photo URL"
                   name="photo"
-                  required
+       
                 />
               </div>
 
@@ -138,7 +153,7 @@ const Register = () => {
                 border-gray-500 rounded-sm"
                     placeholder="Password"
                     name="password"
-                    required
+
                   />
                   <button
                     onClick={() => setPasswordShow(!passwordShow)}

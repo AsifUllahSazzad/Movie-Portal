@@ -5,12 +5,15 @@ import { AuthContext } from "../../Provider/AuthProvider";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { fetchSignInMethodsForEmail } from "firebase/auth";
 import auth from "../../firebase/firebase.init";
-import Button from "@mui/material/Button";
+import { FaEyeSlash, FaEye } from "react-icons/fa";
 
 const Login = () => {
   const { login, socialLogin } = useContext(AuthContext);
 
   const navigate = useNavigate();
+
+  // Password Show
+  const [passwordShow, setPasswordShow] = useState(false);
 
   // error message
   const [emailErrorMsg, setEmailErrorMsg] = useState("");
@@ -26,6 +29,16 @@ const Login = () => {
     // error message reset
     setEmailErrorMsg("");
     setPasswordErrorMsg("");
+
+    // empty input check
+    if (!email) {
+      setEmailErrorMsg("Email is required.");
+      return;
+    }
+    if (!password) {
+      setPasswordErrorMsg("Password is required.");
+      return;
+    }
 
     const methods = await fetchSignInMethodsForEmail(auth, email);
 
@@ -100,30 +113,44 @@ const Login = () => {
                 </div>
               )}
 
-              <label className="label font-bold text-base">Password</label>
-              <input
-                type="password"
-                className="input border 
-                border-gray-500 rounded-sm"
-                placeholder="Password"
-                name="password"
-              />
-
-              {passwordErrorMsg && (
-                <div className="flex items-center justify-center gap-x-1 text-red-400">
-                  <span>
-                    <RiErrorWarningLine />
-                  </span>
-                  <span>{passwordErrorMsg}</span>
+              <div className="mt-2 space-y-1">
+                <label className="label font-bold text-base">Password</label>
+                <div className="relative">
+                  <input
+                    type={passwordShow ? "text" : "password"}
+                    className="input border 
+                               border-gray-500 rounded-sm"
+                    placeholder="Password"
+                    name="password"
+                  />
+                  <button
+                    onClick={() => setPasswordShow(!passwordShow)}
+                    className="absolute right-5 top-1/2 -translate-1/2"
+                  >
+                    {passwordShow ? (
+                      <FaEyeSlash className="size-4 cursor-pointer" />
+                    ) : (
+                      <FaEye className="size-4 cursor-pointer" />
+                    )}
+                  </button>
                 </div>
-              )}
 
-              <div>
-                <a className="link link-hover">Forgot password?</a>
+                {passwordErrorMsg && (
+                  <div className="flex items-center justify-center gap-x-1 text-red-400">
+                    <span>
+                      <RiErrorWarningLine />
+                    </span>
+                    <span>{passwordErrorMsg}</span>
+                  </div>
+                )}
+
+                <div className="mt-1">
+                  <a className="link link-hover">Forgot password?</a>
+                </div>
               </div>
 
               <button
-                disabled={disabledBtn}
+                // disabled={disabledBtn}
                 className="btn btn-neutral mt-4 border-1 rounded-2xl"
               >
                 Log in
