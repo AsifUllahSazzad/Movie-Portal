@@ -5,11 +5,15 @@ import Box from "@mui/material/Box";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { duration } from "@mui/material/styles";
 import { AuthContext } from "../Provider/AuthProvider";
+import { Bounce, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const AddMovies = () => {
-  const { currentUser } = useContext(AuthContext);
+  // Toast
+  const notify = () => toast("Wow so easy !");
 
-  console.log(currentUser.email)
+  // current user
+  const { currentUser } = useContext(AuthContext);
 
   // genres
   const genres = [
@@ -36,10 +40,8 @@ const AddMovies = () => {
     4.5: "Great",
     5: "Outstanding",
   };
-
   const [value, setValue] = useState(0);
   const [hover, setHover] = useState(-1);
-
   const getLabelText = (value) => {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   };
@@ -48,14 +50,21 @@ const AddMovies = () => {
   const date = new Date().getFullYear();
   const year = Array.from({ length: 50 }, (_, i) => date - i);
 
-  //
-
+  //user input collection
   const [genre, setGenre] = useState("");
   const [releaseYear, setReleaseYear] = useState(0);
   const [rating, setRating] = useState(null);
 
-  // poster url validation check
+  // Error Collection State
   const [posterError, setPosterError] = useState("");
+  const [titleError, setTitleError] = useState("");
+  const [genreError, setGenreError] = useState("");
+  const [durationError, setDurationError] = useState("");
+  const [releaseYearError, setReleaseYearError] = useState("");
+  const [ratingError, setRatingError] = useState("");
+  const [summaryError, setSummaryError] = useState("");
+
+  // poster url validation check
   const handlePosterValidation = (poster) => {
     // input exists and type check
     if (!poster || typeof poster !== "string") {
@@ -92,7 +101,6 @@ const AddMovies = () => {
   };
 
   // Movie title validation
-  const [titleError, setTitleError] = useState("");
   const handleTitleValidation = (title) => {
     // input exists check
     if (!title || typeof title !== "string") {
@@ -126,7 +134,6 @@ const AddMovies = () => {
   };
 
   // duration validation check
-  const [durationError, setDurationError] = useState("");
   const handleDurationValidation = (duration) => {
     // check the input isn't empty
     if (!duration) {
@@ -176,14 +183,9 @@ const AddMovies = () => {
     return { valid: true, error: "" };
   };
 
-  const [genreError, setGenreError] = useState("");
-  const [releaseYearError, setReleaseYearError] = useState("");
-  const [ratingError, setRatingError] = useState("");
-  const [summaryError, setSummaryError] = useState("");
+  const navigate = useNavigate()
 
-  const [btnDisabled, setBtnDisabled] = useState(false);
-
-  const handleAddMovie = (event) => {
+  const handleAddMovie = async (event) => {
     event.preventDefault();
 
     // user input
@@ -245,31 +247,74 @@ const AddMovies = () => {
       return;
     }
 
-    console.log(poster, title, genre, duration, releaseYear, rating, summary, currentUser.email);
+    // console.log(poster, title, genre, duration, releaseYear, rating, summary, currentUser.email);
 
     const newMovieAdd = {
-      'Movie Poster': poster,
-      'Movie Title' : title,
-      'Genre' : genre,
-      'Duration' : duration,
-      'Release Year': releaseYear,
-      'Rating' : rating,
-      'Summary' : summary,
-      'Email' : currentUser.email
-    }
+      "Movie Poster": poster,
+      "Movie Title": title,
+      Genre: genre,
+      Duration: duration,
+      "Release Year": releaseYear,
+      Rating: rating,
+      Summary: summary,
+      Email: currentUser.email,
+    };
 
     // send data to backend
-    fetch("http://localhost:3000/movies", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(newMovieAdd)
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        console.log(result)
+    try {
+      const res = await fetch("http://localhost:3000/movies", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(newMovieAdd),
       });
+
+      const data = await res.json();
+
+      if (data.insertedId || data.acknowledged) {
+        toast.success("Movie added successfully!", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+
+        // form reset
+        form.reset();
+        navigate('/allMovies')
+      } else {
+        toast.error("Something went wrong. Please try again.", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to add movie. Please try again.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    }
   };
 
   return (

@@ -8,6 +8,7 @@ import HomeLayout from "../layouts/HomeLayout";
 import PrivateRoute from "./PrivateRoute";
 import AddMovies from "../private/AddMovies";
 import PrivateLayout from "../layouts/PrivateLayout";
+import AllMovies from "../pages/AllMovies";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/allMovies",
+        element: <AllMovies />,
       },
     ],
   },
@@ -33,16 +38,18 @@ const router = createBrowserRouter([
     ],
   },
   {
-    element: <PrivateRoute>
-        <PrivateLayout/>
-    </PrivateRoute>,
+    element: (
+      <PrivateRoute>
+        <PrivateLayout />
+      </PrivateRoute>
+    ),
     children: [
-        {
-            path: '/addMovies',
-            element: <AddMovies/>
-        }
-    ]
-  }
+      {
+        path: "/addMovies",
+        element: <AddMovies />,
+      },
+    ],
+  },
 ]);
 
 export default router;
