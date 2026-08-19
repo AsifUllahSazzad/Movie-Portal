@@ -102,7 +102,8 @@ const Register = () => {
       const timeOut = setTimeout(() => {
         img.src = "";
         resolve({ valid: false, error: "Image took too long to load." });
-      }, 8000);
+      }, 7000);
+
       // image find success
       img.onload = () => {
         clearTimeout(timeOut);
@@ -204,23 +205,7 @@ const Register = () => {
         }
       });
   };
-  // Register button disable when any input state empty
-  const [disabledBtn, setDisabledBtn] = useState(true);
 
-  // when every input not empty then Register button enable
-  const handleChange = (e) => {
-    const form = e.currentTarget;
-
-    const name = form.name.value.trim();
-    const email = form.email.value.trim();
-    const photoUrl = form.photo.value.trim();
-    const password = form.password.value;
-
-    const allFilled =
-      email !== "" && password !== "" && photoUrl !== "" && name !== "";
-
-    setDisabledBtn(!allFilled);
-  };
 
   return (
     <div className="hero bg-base-200 min-h-screen">
@@ -230,10 +215,10 @@ const Register = () => {
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <div className="card-body">
             <form
-              onChange={handleChange}
               onSubmit={handleForm}
               className="fieldset space-y-2"
             >
+              {/* Name */}
               <div className="space-y-1">
                 <label className="label font-bold text-base">Name</label>
                 <input
@@ -252,6 +237,8 @@ const Register = () => {
                   </div>
                 )}
               </div>
+
+              {/* Email */}
               <div className="space-y-1">
                 <label className="label font-bold text-base">Email</label>
                 <input
@@ -271,6 +258,7 @@ const Register = () => {
                 )}
               </div>
 
+              {/* Photo URL */}
               <div className="space-y-1">
                 <label className="label font-bold text-base">Photo URL</label>
                 <input
@@ -290,6 +278,7 @@ const Register = () => {
                 )}
               </div>
 
+              {/* password */}
               <div className="space-y-1">
                 <label className="label font-bold text-base">Password</label>
                 <div className="relative">
@@ -301,6 +290,7 @@ const Register = () => {
                     name="password"
                   />
                   <button
+                  type="button"
                     onClick={() => setPasswordShow(!passwordShow)}
                     className="absolute right-5 top-1/2 -translate-1/2"
                   >
@@ -310,6 +300,7 @@ const Register = () => {
                       <FaEye className="size-4 cursor-pointer" />
                     )}
                   </button>
+
                 </div>
                 {passwordErrorMessage && (
                   <div className="mt-1 flex items-center justify-center gap-x-1 text-red-400">
@@ -322,7 +313,7 @@ const Register = () => {
               </div>
 
               <button
-                disabled={disabledBtn}
+              type="submit"
                 className="mt-3 btn btn-neutral border-1 rounded-2xl"
               >
                 Register

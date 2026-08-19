@@ -55,8 +55,6 @@ const AddMovies = () => {
   const [releaseYear, setReleaseYear] = useState(0);
   const [rating, setRating] = useState(null);
 
-
-
   // Error Collection State
   const [posterError, setPosterError] = useState("");
   const [titleError, setTitleError] = useState("");
@@ -67,7 +65,7 @@ const AddMovies = () => {
   const [summaryError, setSummaryError] = useState("");
 
   // poster url validation check
-  const handlePosterValidation = (poster) => {
+  const handlePosterValidation = async (poster) => {
     // input exists and type check
     if (!poster || typeof poster !== "string") {
       return { valid: false, error: "Movie Poster link is required." };
@@ -98,7 +96,43 @@ const AddMovies = () => {
         error: "Link must start with http:// or https://",
       };
     }
-    setPosterError("");
+
+    // image direct link validation check
+    // 1st image extension check (no network call)
+    const IMAGE_EXTENSIONS = /\.(jpe?g|png|gif|webp|avif|bmp|svg)(\?.*)?$/i;
+
+    if (!IMAGE_EXTENSIONS.test(url.pathname + url.search)) {
+      return {
+        valid: false,
+        error: "Link doesn't look like a direct image file (.jpg, .png, etc).",
+      };
+    }
+
+    // 2nd actually try loading the image
+    return new Promise((resolve) => {
+      const img = new Image();
+
+      const timeOut = setTimeout(() => {
+        img.src = "";
+        resolve({ valid: false, error: "Image took too long to load." });
+      }, 7000);
+
+      img.onload = () => {
+        clearTimeout(timeOut);
+        resolve({ valid: true, error: "" });
+      };
+
+      img.onerror = () => {
+        clearTimeout(timeOut);
+        resolve({
+          valid: false,
+          error: "Link doesn't point to a loadable image.",
+        });
+      };
+
+      img.src = trimmed;
+    });
+
     return { valid: true, error: "" };
   };
 
@@ -131,7 +165,6 @@ const AddMovies = () => {
       };
     }
 
-    setTitleError("");
     return { valid: true, error: "" };
   };
 
@@ -154,7 +187,6 @@ const AddMovies = () => {
       };
     }
 
-    setDurationError("");
     return { valid: true, error: "" };
   };
 
@@ -180,8 +212,6 @@ const AddMovies = () => {
       return { valid: false, error: "Summary must be at least 10 characters." };
     }
 
-    setSummaryError("");
-
     return { valid: true, error: "" };
   };
 
@@ -198,8 +228,17 @@ const AddMovies = () => {
     const duration = form.duration.value;
     const summary = form.summary.value;
 
+    // Error message clear:
+    setPosterError("");
+    setTitleError("");
+    setGenreError("");
+    setDurationError("");
+    setReleaseYearError("");
+    setRatingError("");
+    setSummaryError("");
+
     // poster validation check
-    const posterValidation = handlePosterValidation(poster);
+    const posterValidation = await handlePosterValidation(poster);
     if (!posterValidation.valid) {
       setPosterError(posterValidation.error);
       return;
@@ -213,7 +252,6 @@ const AddMovies = () => {
     }
 
     // genre validation check
-    setGenreError("");
     if (!genre || typeof genre !== "string") {
       setGenreError("Please select a genre.");
       return;
@@ -228,14 +266,12 @@ const AddMovies = () => {
     }
 
     // year validation check
-    setReleaseYearError("");
     if (!releaseYear) {
       setReleaseYearError("Release Year is required.");
       return;
     }
 
     // rating validation check
-    setRatingError("");
     if (!rating) {
       setRatingError("Please select a rating.");
       return;
@@ -327,10 +363,7 @@ const AddMovies = () => {
         </div>
         <div className="card bg-base-100 w-full max-w-lg shrink-0 shadow-2xl">
           <div className="card-body">
-            <form
-              onSubmit={handleAddMovie}
-              className="fieldset"
-            >
+            <form onSubmit={handleAddMovie} className="fieldset">
               <div className="flex flex-col gap-y-4">
                 <div className="space-y-1">
                   <label className="label font-bold text-base">
@@ -504,9 +537,7 @@ const AddMovies = () => {
                 )}
               </div>
 
-              <button className="btn btn-neutral mt-4">
-                Add Movie
-              </button>
+              <button className="btn btn-neutral mt-4">Add Movie</button>
             </form>
           </div>
         </div>

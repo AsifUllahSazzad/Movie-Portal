@@ -68,6 +68,21 @@ const Login = () => {
       });
   };
 
+  // Login button disable when any input state empty
+  const [disabledBtn, setDisabledBtn] = useState(true);
+
+  // when every input not empty then Login button enable
+  const handleChange = (e) => {
+    const form = e.currentTarget;
+
+    const email = form.email.value.trim();
+    // const password = form.password.value;
+
+    const allFilled = email !== "";
+
+    setDisabledBtn(!allFilled);
+  };
+
   return (
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col w-2/1">
@@ -75,7 +90,11 @@ const Login = () => {
 
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <div className="card-body">
-            <form onSubmit={handleForm} className="fieldset">
+            <form
+              onChange={handleChange}
+              onSubmit={handleForm}
+              className="fieldset"
+            >
               <label className="label font-bold text-base">Email</label>
               <input
                 type="email"
@@ -105,6 +124,7 @@ const Login = () => {
                     name="password"
                   />
                   <button
+                  type="button"
                     onClick={() => setPasswordShow(!passwordShow)}
                     className="absolute right-5 top-1/2 -translate-1/2"
                   >
@@ -131,7 +151,8 @@ const Login = () => {
               </div>
 
               <button
-                // disabled={disabledBtn}
+              type="submit"
+                disabled={disabledBtn}
                 className="btn btn-neutral mt-4 border-1 rounded-2xl"
               >
                 Log in
