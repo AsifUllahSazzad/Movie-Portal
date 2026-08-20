@@ -31,24 +31,24 @@ const AllMovie = ({ movie }) => {
   const [value] = useState(movieRating);
 
   // summary
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpandedState, setIsExpandedState] = useState(false);
   const maxLength = 120; // Maximum length of the summary before truncation
 
-  const truncatedSummary = isExpanded
+  const truncatedSummary = isExpandedState
     ? Summary
     : Summary.length > maxLength
       ? Summary.substring(0, maxLength) + "... "
       : Summary;
 
   return (
-    <div className="card bg-base-100 w-96 shadow-2xl cursor-pointer hover:scale-105 transition-transform duration-300">
+    <div className="card bg-base-100 w-96 shadow-2xl cursor-pointer hover:scale-105 transition-transform duration-300 flex flex-col h-[560px] overflow-hidden">
       <figure
         className="movie-poster-fade"
         style={{ backgroundImage: `url(${moviePoster})` }}
       >
         <img src={moviePoster} alt="Shoes" />
       </figure>
-      <div className="card-body -mt-3">
+      <div className="card-body -mt-3 flex flex-col flex-1">
         <h2 className="card-title text-3xl font-normal">{movieTitle}</h2>
         <div className="space-x-2 -mt-2 text-base text-[#818181] font-semibold">
           <span>{Genre} /</span>
@@ -71,16 +71,25 @@ const AllMovie = ({ movie }) => {
             }
           />
         </div>
-        <p className="text-[#c1b9b9]">{truncatedSummary}
+        <div
+          className={`text-[#c1b9b9] leading-relaxed transition-all duration-300 ${
+            isExpandedState ? "overflow-y-auto" : "overflow-hidden"
+          }`}
+          style={{ maxHeight: isExpandedState ? "180px" : "64px" }}
+        >
+          {truncatedSummary}
 
           {Summary.length > maxLength && (
             <button
-            className="text-blue-500 font-semibold ml-2 hover:underline cursor-pointer"
-            onClick={() => setIsExpanded(!isExpanded)}
-            >{isExpanded ? "Read Less" : "Read More"}</button>
+              type="button"
+              className="text-blue-500 font-semibold ml-2 hover:underline cursor-pointer"
+              onClick={() => setIsExpandedState(!isExpandedState)}
+            >
+              {isExpandedState ? "Read Less" : "Read More"}
+            </button>
           )}
-        </p>
-{/* 
+        </div>
+        {/* 
         <div className="card-actions justify-end">
       
         </div> */}
