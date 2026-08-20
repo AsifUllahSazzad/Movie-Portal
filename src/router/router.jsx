@@ -1,4 +1,3 @@
-import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import AuthLayout from "../layouts/AuthLayout";
 import Login from "../pages/auth/Login";
@@ -9,6 +8,7 @@ import PrivateRoute from "./PrivateRoute";
 import AddMovies from "../private/AddMovies";
 import PrivateLayout from "../layouts/PrivateLayout";
 import AllMovies from "../pages/AllMovies";
+import MovieDetails from "../private/MovieDetails";
 
 const router = createBrowserRouter([
   {
@@ -22,11 +22,26 @@ const router = createBrowserRouter([
         path: "/allMovies",
         element: <AllMovies />,
         loader: async () => {
-          const res = await fetch('http://localhost:3000/movies')
+          const res = await fetch("http://localhost:3000/movies");
           const data = await res.json();
 
           return data;
-        }
+        },
+      },
+      {
+        path: "/allMovies/movieDetails/:title",
+        element: (
+          <PrivateRoute>
+            <MovieDetails />
+          </PrivateRoute>
+        ),
+        loader: async ({ params }) => {
+          const res = await fetch(
+            `http://localhost:3000/movies/${params.title}`,
+          );
+          const data = await res.json();
+          return data;
+        },
       },
     ],
   },
