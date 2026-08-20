@@ -136,7 +136,7 @@ const AddMovies = () => {
   };
 
   // Movie title validation check
-  const handleTitleValidation = (title) => {
+  const handleTitleValidation = async (title) => {
     // input exists and type check
     if (!title || typeof title !== "string") {
       return {
@@ -164,6 +164,17 @@ const AddMovies = () => {
       };
     }
 
+    // movie existence check in the database
+    try {
+      const res = await fetch(`http://localhost:3000/movies/${trimmed}`);
+
+      const data = await res.json();
+      if (data) {
+        return { valid: false, error: "Movie already exists in the database." };
+      }
+    } catch (error) {
+      return { valid: true, error: "" };
+    }
     return { valid: true, error: "" };
   };
 
@@ -246,7 +257,7 @@ const AddMovies = () => {
     }
 
     // title validation check
-    const titleValidation = handleTitleValidation(title);
+    const titleValidation = await handleTitleValidation(title);
     if (!titleValidation.valid) {
       setTitleError(titleValidation.error);
       return;
