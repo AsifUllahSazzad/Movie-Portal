@@ -1,5 +1,7 @@
-import React from "react";
 import "./AllMovie.css";
+import { useState } from "react";
+import Rating from "@mui/material/Rating";
+import StarIcon from "@mui/icons-material/Star";
 
 const AllMovie = ({ movie }) => {
   const {
@@ -7,7 +9,7 @@ const AllMovie = ({ movie }) => {
     "Movie Title": movieTitle,
     "Release Year": releaseYear,
     Duration,
-    Rating,
+    Rating: movieRating,
     Summary,
     Genre,
     _id,
@@ -24,6 +26,9 @@ const AllMovie = ({ movie }) => {
 
     return `${hours}h ${remainingMins}min`;
   };
+
+  // rating value
+  const [value] = useState(movieRating);
 
   return (
     <div className="card bg-base-100 w-96 shadow-2xl">
@@ -45,7 +50,16 @@ const AllMovie = ({ movie }) => {
 
         <div className="text-base flex justify-between items-center">
           <span className="uppercase text-[#e7e7e7]">Summary</span>
-          <span>{Rating}</span>
+
+          <Rating
+            name="rating"
+            value={value}
+            precision={0.5}
+            readOnly
+            emptyIcon={
+              <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />
+            }
+          />
         </div>
         {/* <p>{Summary}</p> */}
 

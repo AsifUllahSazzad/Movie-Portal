@@ -3,7 +3,6 @@ import Rating from "@mui/material/Rating";
 import StarIcon from "@mui/icons-material/Star";
 import Box from "@mui/material/Box";
 import { RiErrorWarningLine } from "react-icons/ri";
-import { duration } from "@mui/material/styles";
 import { AuthContext } from "../Provider/AuthProvider";
 import { Bounce, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
