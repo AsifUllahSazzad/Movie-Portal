@@ -14,7 +14,7 @@ const AddMovies = () => {
   // current user
   const { currentUser } = useContext(AuthContext);
 
-  // genres
+  // genres for select option
   const genres = [
     "Comedy",
     "Drama",
@@ -26,7 +26,7 @@ const AddMovies = () => {
     "Animation",
   ];
 
-  // rating
+  // rating for movie
   const labels = {
     0.5: "Terrible",
     1: "Bad",
@@ -45,16 +45,16 @@ const AddMovies = () => {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   };
 
-  // release year
+  // release year for select option
   const date = new Date().getFullYear();
   const year = Array.from({ length: 50 }, (_, i) => date - i);
 
-  // user input collection
+  // user input state
   const [genre, setGenre] = useState("");
   const [releaseYear, setReleaseYear] = useState(0);
   const [rating, setRating] = useState(null);
 
-  // Error Collection State
+  // error state for user input validation
   const [posterError, setPosterError] = useState("");
   const [titleError, setTitleError] = useState("");
   const [genreError, setGenreError] = useState("");
@@ -63,7 +63,7 @@ const AddMovies = () => {
   const [ratingError, setRatingError] = useState("");
   const [summaryError, setSummaryError] = useState("");
 
-  // poster url validation check
+  // Poster validation check
   const handlePosterValidation = async (poster) => {
     // input exists and type check
     if (!poster || typeof poster !== "string") {
@@ -73,14 +73,14 @@ const AddMovies = () => {
     // start and ending space remove
     const trimmed = poster.trim();
 
-    // check space
+    // check middle space
     const hasSpace = /\s/.test(trimmed);
 
     if (hasSpace) {
       return { valid: false, error: "Link cannot contain space." };
     }
 
-    // check url is right or not
+    // after trim check if the input is a valid URL
     let url;
     try {
       url = new URL(trimmed);
@@ -88,7 +88,7 @@ const AddMovies = () => {
       return { valid: false, error: "Please provide a valid link." };
     }
 
-    // check https:// or http://
+    // check http or https protocol
     if (!["https:", "http:"].includes(url.protocol)) {
       return {
         valid: false,
@@ -96,8 +96,8 @@ const AddMovies = () => {
       };
     }
 
-    // image direct link validation check
-    // 1st image extension check (no network call)
+    // image validation check
+    //1st image extension check (no network call)
     const IMAGE_EXTENSIONS = /\.(jpe?g|png|gif|webp|avif|bmp|svg)(\?.*)?$/i;
 
     if (!IMAGE_EXTENSIONS.test(url.pathname + url.search)) {
@@ -107,7 +107,7 @@ const AddMovies = () => {
       };
     }
 
-    // 2nd actually try loading the image
+    // 2nd image load check (network call)
     return new Promise((resolve) => {
       const img = new Image();
 
@@ -135,9 +135,9 @@ const AddMovies = () => {
     return { valid: true, error: "" };
   };
 
-  // Movie title validation
+  // Movie title validation check
   const handleTitleValidation = (title) => {
-    // input exists check
+    // input exists and type check
     if (!title || typeof title !== "string") {
       return {
         valid: false,
@@ -148,7 +148,7 @@ const AddMovies = () => {
     // start and ending space remove
     const trimmed = title.trim();
 
-    // after check tilte exists
+    // after trim check if the input is empty
     if (trimmed.length === 0) {
       return {
         valid: false,
@@ -156,7 +156,7 @@ const AddMovies = () => {
       };
     }
 
-    // check atleast 2 character
+    // check if the input is at least 2 characters long
     if (trimmed.length < 2) {
       return {
         valid: false,
@@ -167,9 +167,9 @@ const AddMovies = () => {
     return { valid: true, error: "" };
   };
 
-  // duration validation check
+  // Duration validation check
   const handleDurationValidation = (duration) => {
-    // check the input isn't empty
+    // check if the input is empty
     if (!duration) {
       return {
         valid: false,
@@ -177,7 +177,7 @@ const AddMovies = () => {
       };
     }
 
-    // convert number
+    // check duration greater than 60 minutes
     const numDuration = Number(duration);
     if (numDuration <= 60) {
       return {
@@ -189,8 +189,9 @@ const AddMovies = () => {
     return { valid: true, error: "" };
   };
 
+  // Summary validation check
   const handleSummaryValidation = (summary) => {
-    //check the input isn't empty and type
+    // check if the input is empty or not a string
     if (!summary || typeof summary !== "string") {
       return {
         valid: false,
@@ -198,15 +199,15 @@ const AddMovies = () => {
       };
     }
 
-    // trim whitespace
+    // trim the summary to remove leading and trailing whitespace
     const trimmedSummary = summary.trim();
 
-    // after trim check summary isn't empty
+    // after trim check if the input is empty
     if (trimmedSummary.length === 0) {
       return { valid: false, error: "Summary is required." };
     }
 
-    // at least 10 character
+    // additional check for minimum length of the summary
     if (trimmedSummary.length < 10) {
       return { valid: false, error: "Summary must be at least 10 characters." };
     }
@@ -216,18 +217,19 @@ const AddMovies = () => {
 
   const navigate = useNavigate();
 
+  // handle form submission
   const handleAddMovie = async (event) => {
     event.preventDefault();
 
-    // user input
+    // get form data
     const form = event.target;
-
+    // get values from form inputs
     const poster = form.posterUrl.value;
     const title = form.movieTitle.value;
     const duration = form.duration.value;
     const summary = form.summary.value;
 
-    // Error message clear:
+    // error state reset before validation
     setPosterError("");
     setTitleError("");
     setGenreError("");
@@ -297,7 +299,7 @@ const AddMovies = () => {
       Email: currentUser.email,
     };
 
-    // send data to backend
+    // send data to the server
     try {
       const res = await fetch("http://localhost:3000/movies", {
         method: "POST",
@@ -322,7 +324,7 @@ const AddMovies = () => {
           transition: Bounce,
         });
 
-        // form reset
+        // form reset and navigate to all movies page
         form.reset();
         navigate("/allMovies");
       } else {
