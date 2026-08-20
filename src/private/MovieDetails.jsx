@@ -23,6 +23,8 @@ const MovieDetails = () => {
   } = movieDetails;
 
   const [value] = useState(movieRating);
+
+  // delete movie function
   const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
 
