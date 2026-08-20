@@ -16,7 +16,7 @@ const AllMovie = ({ movie }) => {
     Email,
   } = movie;
 
-  // convert hours
+  // duration formatting function
   const formatDuration = (minutes) => {
     const mins = Number(minutes);
     if (!mins || isNaN(mins)) return "";
@@ -27,11 +27,21 @@ const AllMovie = ({ movie }) => {
     return `${hours}h ${remainingMins}min`;
   };
 
-  // rating value
+  // rating for movie
   const [value] = useState(movieRating);
 
+  // summary
+  const [isExpanded, setIsExpanded] = useState(false);
+  const maxLength = 120; // Maximum length of the summary before truncation
+
+  const truncatedSummary = isExpanded
+    ? Summary
+    : Summary.length > maxLength
+      ? Summary.substring(0, maxLength) + "... "
+      : Summary;
+
   return (
-    <div className="card bg-base-100 w-96 shadow-2xl">
+    <div className="card bg-base-100 w-96 shadow-2xl cursor-pointer hover:scale-105 transition-transform duration-300">
       <figure
         className="movie-poster-fade"
         style={{ backgroundImage: `url(${moviePoster})` }}
@@ -61,11 +71,19 @@ const AllMovie = ({ movie }) => {
             }
           />
         </div>
-        {/* <p>{Summary}</p> */}
+        <p className="text-[#c1b9b9]">{truncatedSummary}
 
+          {Summary.length > maxLength && (
+            <button
+            className="text-blue-500 font-semibold ml-2 hover:underline cursor-pointer"
+            onClick={() => setIsExpanded(!isExpanded)}
+            >{isExpanded ? "Read Less" : "Read More"}</button>
+          )}
+        </p>
+{/* 
         <div className="card-actions justify-end">
-          <button className="btn btn-primary">Buy Now</button>
-        </div>
+      
+        </div> */}
       </div>
     </div>
   );
