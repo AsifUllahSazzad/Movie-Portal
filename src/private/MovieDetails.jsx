@@ -1,10 +1,11 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Rating from "@mui/material/Rating";
 import StarIcon from "@mui/icons-material/Star";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import Swal from "sweetalert2";
 
 const MovieDetails = () => {
   const movieDetails = useLoaderData();
@@ -22,6 +23,59 @@ const MovieDetails = () => {
   } = movieDetails;
 
   const [value] = useState(movieRating);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const navigate = useNavigate();
+
+  const handleDelete = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d32f2f",
+      cancelButtonColor: "#40454a",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (!result.isConfirmed) return;
+
+    setIsDeleting(true);
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/movies/${encodeURIComponent(movieTitle)}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) throw new Error("Unable to delete movie");
+
+      const data = await response.json();
+      if (data.deletedCount === 0) throw new Error("Movie was not found");
+
+      await Swal.fire({
+        title: "Deleted!",
+        text: "The movie has been deleted successfully.",
+        icon: "success",
+        confirmButtonColor: "#2e7d32",
+      });
+
+      navigate("/allMovies");
+    } catch (error) {
+      await Swal.fire({
+        title: "Delete failed",
+        text: error.message,
+        icon: "error",
+        confirmButtonColor: "#40454a",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div className="flex justify-center gap-x-5">
@@ -67,11 +121,18 @@ const MovieDetails = () => {
               backgroundColor: "#40454a",
               color: "white",
               "&:hover": { backgroundColor: "#5a6169" },
+              "&.Mui-disabled": {
+                backgroundColor: "#6b4f50",
+                borderColor: "#6b4f50",
+                color: "#e6c8c9",
+              },
             }}
             variant="outlined"
             startIcon={<DeleteIcon />}
+            onClick={handleDelete}
+            disabled={isDeleting}
           >
-            Delete Movie
+            {isDeleting ? "Deleting..." : "Delete Movie"}
           </Button>
           <Button
             sx={{
