@@ -35,7 +35,7 @@ const MovieDetails = () => {
             <li>{Duration}</li>
           </ul>
           <div className="flex justify-between items-center space-y-4">
-            <span className="btn rounded-3xl bg-[#40454a] text-white py-2 px-4 text-base font-normal">
+            <span className="btn rounded-3xl bg-[#40454a] text-white py-2 px-4 text-base font-normal cursor-auto">
               {Genre}
             </span>
 
