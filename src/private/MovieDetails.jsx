@@ -1,5 +1,5 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Rating from "@mui/material/Rating";
 import StarIcon from "@mui/icons-material/Star";
 import Button from "@mui/material/Button";
@@ -79,7 +79,26 @@ const MovieDetails = () => {
     }
   };
 
-  // f
+  //
+  // const [isFavorited, setIsFavorited] = useState(false);
+  // useEffect(() => {
+  //   console.log('hi')
+  //   fetch(
+  //     `http://localhost:3000/favoritesMovies/check?email=${encodeURIComponent(Email)}&title=${encodeURIComponent(movieTitle)}`,
+  //     {
+  //       method: "GET",
+  //       headers: {
+  //         "content-type": "application/json",
+  //       },
+  //     },
+  //   )
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setIsFavorited(true);
+  //     });
+  // }, [Email, movieTitle]);
+
+  // const [isFavoriting, setFavoriting] = useState(false);
   const handleFavorite = async (email) => {
     const favMovies = {
       MoviePoster: moviePoster,
@@ -92,17 +111,22 @@ const MovieDetails = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:3000/favoritesMovies`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
+      const response = await fetch(
+        `http://localhost:3000/favoritesMovies/${encodeURIComponent(email)}`,
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(favMovies),
         },
-        body: JSON.stringify(favMovies),
-      });
-
-
+      );
 
       const result = await response.json();
+
+      if (!result.alreadyExists) {
+        setFavoriting(true);
+      }
 
       if (result.status === 409) {
         return;
@@ -172,6 +196,7 @@ const MovieDetails = () => {
             {isDeleting ? "Deleting..." : "Delete Movie"}
           </Button>
           <Button
+            disabled={isFavorited || isFavoriting}
             onClick={() => handleFavorite(Email)}
             sx={{
               backgroundColor: "#40454a",
