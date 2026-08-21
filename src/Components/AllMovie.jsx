@@ -69,7 +69,10 @@ const AllMovie = ({ movie }) => {
               precision={0.5}
               readOnly
               emptyIcon={
-                <StarIcon style={{ opacity: 0.55, color: "#dde0e2"  }} fontSize="inherit" />
+                <StarIcon
+                  style={{ opacity: 0.55, color: "#dde0e2" }}
+                  fontSize="inherit"
+                />
               }
             />
           </div>

@@ -79,6 +79,41 @@ const MovieDetails = () => {
     }
   };
 
+  // f
+  const handleFavorite = async (email) => {
+    const favMovies = {
+      MoviePoster: moviePoster,
+      MovieTitle: movieTitle,
+      Genre,
+      Duration,
+      ReleaseYear: releaseYear,
+      Rating: movieRating,
+      Email: email,
+    };
+
+    try {
+      const response = await fetch(`http://localhost:3000/favoritesMovies`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(favMovies),
+      });
+
+
+
+      const result = await response.json();
+
+      if (result.status === 409) {
+        return;
+      }
+    } catch (error) {
+      console.log("Error");
+    }
+
+    // console.log(email)
+  };
+
   return (
     <div className="flex justify-center gap-x-5">
       <div className="size-140">
@@ -137,6 +172,7 @@ const MovieDetails = () => {
             {isDeleting ? "Deleting..." : "Delete Movie"}
           </Button>
           <Button
+            onClick={() => handleFavorite(Email)}
             sx={{
               backgroundColor: "#40454a",
               color: "white",

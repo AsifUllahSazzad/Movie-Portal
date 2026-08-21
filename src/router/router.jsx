@@ -9,6 +9,7 @@ import AddMovies from "../private/AddMovies";
 import PrivateLayout from "../layouts/PrivateLayout";
 import AllMovies from "../pages/AllMovies";
 import MovieDetails from "../private/MovieDetails";
+import FavoritesMovie from "../pages/FavoritesMovie";
 
 const router = createBrowserRouter([
   {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
       {
         path: "/addMovies",
         element: <AddMovies />,
+      },
+      {
+        path: "/favoritesMovie",
+        element: <FavoritesMovie />,
       },
     ],
   },

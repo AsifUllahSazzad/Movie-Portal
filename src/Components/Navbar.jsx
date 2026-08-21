@@ -7,16 +7,16 @@ const Navbar = () => {
   const lists = (
     <>
       <li>
-        <NavLink to={'/'}>Home</NavLink>
+        <NavLink to={"/"}>Home</NavLink>
       </li>
       <li>
-        <NavLink to={'/allMovies'}>All Movies</NavLink>
+        <NavLink to={"/allMovies"}>All Movies</NavLink>
       </li>
       <li>
         <NavLink to={"/addMovies"}>Add Movie</NavLink>
       </li>
       <li>
-        <a>My Favorites</a>
+        <NavLink to={"/favoritesMovie"}>My Favorites</NavLink>
       </li>
       <li>
         <a>Top Rated</a>
