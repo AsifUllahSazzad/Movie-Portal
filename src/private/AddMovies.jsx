@@ -8,11 +8,10 @@ import { Bounce, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const AddMovies = () => {
-  // Toast
-  const notify = () => toast("Wow so easy !");
-
   // current user
   const { currentUser } = useContext(AuthContext);
+
+  console.log(currentUser)
 
   // genres for select option
   const genres = [

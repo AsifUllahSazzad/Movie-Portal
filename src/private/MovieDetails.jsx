@@ -1,14 +1,19 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Rating from "@mui/material/Rating";
 import StarIcon from "@mui/icons-material/Star";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Swal from "sweetalert2";
+import { AuthContext } from "../Provider/AuthProvider";
 
 const MovieDetails = () => {
   const movieDetails = useLoaderData();
+
+  // current user
+  const { currentUser } = useContext(AuthContext);
+  console.log("Current User: ", currentUser.email);
 
   const {
     "Movie Poster": moviePoster,
@@ -19,7 +24,6 @@ const MovieDetails = () => {
     Summary,
     Genre,
     _id,
-    Email,
   } = movieDetails;
 
   const [value] = useState(movieRating);
@@ -82,17 +86,25 @@ const MovieDetails = () => {
   //
   const [isFavorited, setIsFavorited] = useState(false);
   useEffect(() => {
-    fetch(`http://localhost:3000/favoritesMovies/${Email}`, {
+    const params = new URLSearchParams({ title: movieTitle });
+
+    const url = `http://localhost:3000/favoritesMovies/${currentUser.email}?${params.toString()}`;
+
+    fetch(url, {
       method: "GET",
       headers: {
         "content-type": "application/json",
       },
     })
       .then((res) => res.json())
-      .then((data) => console.log(data));
-  }, [Email, movieTitle]);
+      .then((data) => {
+        if (data.exists) {
+          setIsFavorited(true);
+        }
+      });
+  }, [currentUser.email, movieTitle]);
 
-  const [isFavoriting, setFavoriting] = useState(false);
+  const [isFavoriting, setIsFavoriting] = useState(false);
   const handleFavorite = async (email) => {
     const favMovies = {
       MoviePoster: moviePoster,
@@ -103,7 +115,6 @@ const MovieDetails = () => {
       Rating: movieRating,
       Email: email,
     };
-
     try {
       const response = await fetch(`http://localhost:3000/favoritesMovies`, {
         method: "POST",
@@ -113,17 +124,13 @@ const MovieDetails = () => {
         body: JSON.stringify(favMovies),
       });
 
-      const result = await response.json();
+      const data = await response.json();
 
-      if (!result.alreadyExists) {
-        setFavoriting(true);
-      }
-
-      if (result.status === 409) {
-        return;
+      if (!data.alreadyExists) {
+        setIsFavoriting(true);
       }
     } catch (error) {
-      console.log("Error");
+      return;
     }
   };
 
@@ -185,8 +192,8 @@ const MovieDetails = () => {
             {isDeleting ? "Deleting..." : "Delete Movie"}
           </Button>
           <Button
-            // disabled={isFavorited || isFavoriting}
-            onClick={() => handleFavorite(Email)}
+            disabled={isFavorited || isFavoriting}
+            onClick={() => handleFavorite(currentUser.email)}
             sx={{
               backgroundColor: "#40454a",
               color: "white",
