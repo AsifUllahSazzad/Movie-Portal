@@ -80,25 +80,19 @@ const MovieDetails = () => {
   };
 
   //
-  // const [isFavorited, setIsFavorited] = useState(false);
-  // useEffect(() => {
-  //   console.log('hi')
-  //   fetch(
-  //     `http://localhost:3000/favoritesMovies/check?email=${encodeURIComponent(Email)}&title=${encodeURIComponent(movieTitle)}`,
-  //     {
-  //       method: "GET",
-  //       headers: {
-  //         "content-type": "application/json",
-  //       },
-  //     },
-  //   )
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setIsFavorited(true);
-  //     });
-  // }, [Email, movieTitle]);
+  const [isFavorited, setIsFavorited] = useState(false);
+  useEffect(() => {
+    fetch(`http://localhost:3000/favoritesMovies/${Email}`, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }, [Email, movieTitle]);
 
-  // const [isFavoriting, setFavoriting] = useState(false);
+  const [isFavoriting, setFavoriting] = useState(false);
   const handleFavorite = async (email) => {
     const favMovies = {
       MoviePoster: moviePoster,
@@ -111,16 +105,13 @@ const MovieDetails = () => {
     };
 
     try {
-      const response = await fetch(
-        `http://localhost:3000/favoritesMovies/${encodeURIComponent(email)}`,
-        {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify(favMovies),
+      const response = await fetch(`http://localhost:3000/favoritesMovies`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
         },
-      );
+        body: JSON.stringify(favMovies),
+      });
 
       const result = await response.json();
 
@@ -134,8 +125,6 @@ const MovieDetails = () => {
     } catch (error) {
       console.log("Error");
     }
-
-    // console.log(email)
   };
 
   return (
@@ -196,7 +185,7 @@ const MovieDetails = () => {
             {isDeleting ? "Deleting..." : "Delete Movie"}
           </Button>
           <Button
-            disabled={isFavorited || isFavoriting}
+            // disabled={isFavorited || isFavoriting}
             onClick={() => handleFavorite(Email)}
             sx={{
               backgroundColor: "#40454a",
